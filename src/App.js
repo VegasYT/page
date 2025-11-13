@@ -13,6 +13,7 @@ export default function App() {
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isAddBlockModalOpen, setIsAddBlockModalOpen] = useState(false);
+  const [insertAfterPosition, setInsertAfterPosition] = useState(null);
   const [hoveredBlockId, setHoveredBlockId] = useState(null);
   const [viewportSize, setViewportSize] = useState('desktop');
 
@@ -47,8 +48,24 @@ export default function App() {
         data: { ...blockTemplate.default_data }
       } : {}
     };
-    setBlocks([...blocks, newBlock].map((b, idx) => ({ ...b, position: idx })));
+
+    let newBlocks;
+    if (insertAfterPosition !== null) {
+      // Вставляем блок после указанной позиции
+      const insertIndex = insertAfterPosition + 1;
+      newBlocks = [
+        ...blocks.slice(0, insertIndex),
+        newBlock,
+        ...blocks.slice(insertIndex)
+      ];
+    } else {
+      // Добавляем в конец
+      newBlocks = [...blocks, newBlock];
+    }
+
+    setBlocks(newBlocks.map((b, idx) => ({ ...b, position: idx })));
     setIsAddBlockModalOpen(false);
+    setInsertAfterPosition(null);
   };
 
   const deleteBlock = (blockId) => {
@@ -65,6 +82,11 @@ export default function App() {
     const newBlocks = [...blocks];
     [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
     setBlocks(newBlocks.map((b, idx) => ({ ...b, position: idx })));
+  };
+
+  const openAddBlockAfter = (position) => {
+    setInsertAfterPosition(position);
+    setIsAddBlockModalOpen(true);
   };
 
   return (
@@ -102,6 +124,7 @@ export default function App() {
                 onDelete={() => deleteBlock(block.id)}
                 onMoveUp={() => moveBlock(block.id, 'up')}
                 onMoveDown={() => moveBlock(block.id, 'down')}
+                onAddAfter={() => openAddBlockAfter(block.position)}
                 isFirst={block.position === 0}
                 isLast={block.position === blocks.length - 1}
                 viewportSize={viewportSize}

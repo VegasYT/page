@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Settings, Trash2, ArrowUp, ArrowDown, Plus } from 'lucide-react';
 import UniversalBlockRenderer from './UniversalBlockRenderer';
 import ZeroBlockPreview from './ZeroBlockPreview';
 
@@ -14,6 +14,7 @@ export default function BlockPreview({
   onDelete,
   onMoveUp,
   onMoveDown,
+  onAddAfter,
   isFirst,
   isLast,
   viewportSize
@@ -79,6 +80,20 @@ export default function BlockPreview({
           viewportSize={viewportSize}
         />
       ) : null}
+
+      {/* Кнопка добавления блока после текущего */}
+      <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-20">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddAfter();
+          }}
+          className="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 group"
+          title="Добавить блок после"
+        >
+          <Plus size={20} className="group-hover:rotate-90 transition-transform" />
+        </button>
+      </div>
     </div>
   );
 }
