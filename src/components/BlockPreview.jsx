@@ -82,7 +82,9 @@ export default function BlockPreview({
       ) : null}
 
       {/* Кнопка добавления блока после текущего */}
-      <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-20">
+      <div className={`absolute -bottom-5 left-1/2 -translate-x-1/2 z-20 transition-all duration-300 ${
+        isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'
+      }`}>
         <button
           onClick={(e) => {
             e.stopPropagation();
