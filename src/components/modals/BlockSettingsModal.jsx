@@ -6,6 +6,7 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
   const [settings, setSettings] = useState(block.settings || {});
   const [activeTab, setActiveTab] = useState('content');
   const [isVisible, setIsVisible] = useState(false);
+  const [mouseDownOnOverlay, setMouseDownOnOverlay] = useState(false);
 
   useEffect(() => {
     // Плавное появление модалки
@@ -15,6 +16,21 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);
+  };
+
+  const handleOverlayMouseDown = (e) => {
+    // Запоминаем, что mousedown был на оверлее
+    if (e.target === e.currentTarget) {
+      setMouseDownOnOverlay(true);
+    }
+  };
+
+  const handleOverlayClick = (e) => {
+    // Закрываем только если и mousedown и click были на оверлее
+    if (e.target === e.currentTarget && mouseDownOnOverlay) {
+      handleClose();
+    }
+    setMouseDownOnOverlay(false);
   };
 
   const handleStyleChange = (key, value) => {
@@ -40,9 +56,13 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
   // Отдельная обработка для Zero Block
   if (block.type === 'zeroblock') {
     return (
-      <div className={`fixed inset-0 bg-black flex items-center justify-center z-50 transition-all duration-300 ${
-        isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
-      }`} onClick={handleClose}>
+      <div
+        className={`fixed inset-0 bg-black flex items-center justify-center z-50 transition-all duration-300 ${
+          isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
+        }`}
+        onMouseDown={handleOverlayMouseDown}
+        onClick={handleOverlayClick}
+      >
         <div
           className={`bg-white rounded-2xl w-full max-w-2xl mx-4 shadow-2xl transition-all duration-300 transform ${
             isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
@@ -81,7 +101,8 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
       className={`fixed inset-0 bg-black flex items-center justify-center z-50 p-4 transition-all duration-300 ${
         isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
       }`}
-      onClick={handleClose}
+      onMouseDown={handleOverlayMouseDown}
+      onClick={handleOverlayClick}
     >
       <div
         className={`bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transition-all duration-300 transform ${

@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 export default function AddBlockModal({ categories, blockTemplates, onClose, onAddBlock }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [mouseDownOnOverlay, setMouseDownOnOverlay] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 10);
@@ -13,6 +14,21 @@ export default function AddBlockModal({ categories, blockTemplates, onClose, onA
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);
+  };
+
+  const handleOverlayMouseDown = (e) => {
+    // Запоминаем, что mousedown был на оверлее
+    if (e.target === e.currentTarget) {
+      setMouseDownOnOverlay(true);
+    }
+  };
+
+  const handleOverlayClick = (e) => {
+    // Закрываем только если и mousedown и click были на оверлее
+    if (e.target === e.currentTarget && mouseDownOnOverlay) {
+      handleClose();
+    }
+    setMouseDownOnOverlay(false);
   };
 
   const filteredTemplates = selectedCategory
@@ -24,7 +40,8 @@ export default function AddBlockModal({ categories, blockTemplates, onClose, onA
       className={`fixed inset-0 bg-black flex items-center justify-center z-50 p-4 transition-all duration-300 ${
         isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
       }`}
-      onClick={handleClose}
+      onMouseDown={handleOverlayMouseDown}
+      onClick={handleOverlayClick}
     >
       <div
         className={`bg-white rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transition-all duration-300 transform ${
