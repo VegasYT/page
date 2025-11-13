@@ -98,7 +98,7 @@ export default function App() {
       />
 
       <div className="flex justify-center bg-gray-200 min-h-screen py-8">
-        <div className={`${getViewportClass(viewportSize)} bg-white shadow-lg`}>
+        <div className={`${getViewportClass(viewportSize)} bg-white shadow-lg transition-all duration-500 ease-in-out`}>
           {blocks.length === 0 ? (
             <div className={`${getViewportClass(viewportSize)} mx-auto`}>
               <div className="text-center py-32">

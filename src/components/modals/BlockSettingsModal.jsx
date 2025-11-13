@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 // Модальное окно настроек блока
 export default function BlockSettingsModal({ block, template, onClose, onSave }) {
   const [settings, setSettings] = useState(block.settings || {});
   const [activeTab, setActiveTab] = useState('content');
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Плавное появление модалки
+    setTimeout(() => setIsVisible(true), 10);
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 300);
+  };
 
   const handleStyleChange = (key, value) => {
     setSettings({
@@ -29,17 +40,34 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
   // Отдельная обработка для Zero Block
   if (block.type === 'zeroblock') {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg w-full max-w-2xl mx-4">
-          <div className="flex items-center justify-between p-6 border-b">
-            <h2 className="text-2xl font-bold">Zero Block</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+      <div className={`fixed inset-0 bg-black flex items-center justify-center z-50 transition-all duration-300 ${
+        isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
+      }`} onClick={handleClose}>
+        <div
+          className={`bg-white rounded-2xl w-full max-w-2xl mx-4 shadow-2xl transition-all duration-300 transform ${
+            isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Zero Block
+            </h2>
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-gray-600 hover:rotate-90 transition-all duration-300"
+            >
               <X size={24} />
             </button>
           </div>
-          <div className="p-6 text-center">
-            <p className="text-gray-600 mb-4">Для редактирования Zero Block используйте редактор</p>
-            <button className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+          <div className="p-8 text-center">
+            <div className="mb-6">
+              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                Z
+              </div>
+            </div>
+            <p className="text-gray-600 mb-6 text-lg">Для редактирования Zero Block используйте редактор</p>
+            <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 font-medium">
               Открыть редактор
             </button>
           </div>
@@ -49,44 +77,65 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-2xl font-bold">{template?.name}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+    <div
+      className={`fixed inset-0 bg-black flex items-center justify-center z-50 p-4 transition-all duration-300 ${
+        isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
+      }`}
+      onClick={handleClose}
+    >
+      <div
+        className={`bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transition-all duration-300 transform ${
+          isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            {template?.name}
+          </h2>
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 hover:rotate-90 transition-all duration-300"
+          >
             <X size={24} />
           </button>
         </div>
 
-        <div className="flex border-b">
+        <div className="flex border-b bg-gray-50">
           <button
             onClick={() => setActiveTab('content')}
-            className={`px-6 py-3 font-medium ${
+            className={`px-6 py-3 font-medium relative transition-all duration-300 ${
               activeTab === 'content'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-blue-600'
                 : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             Контент
+            {activeTab === 'content' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 animate-pulse"></div>
+            )}
           </button>
           <button
             onClick={() => setActiveTab('styles')}
-            className={`px-6 py-3 font-medium ${
+            className={`px-6 py-3 font-medium relative transition-all duration-300 ${
               activeTab === 'styles'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-blue-600'
                 : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             Стили
+            {activeTab === 'styles' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 animate-pulse"></div>
+            )}
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-gray-50 to-blue-50/30">
           {activeTab === 'content' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold mb-4">Редактирование контента</h3>
-              {template?.settings.editableElements.map(element => (
-                <div key={element}>
+            <div className="space-y-6 animate-fadeIn">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Редактирование контента</h3>
+              {template?.settings.editableElements.map((element, index) => (
+                <div key={element} className="animate-slideIn" style={{ animationDelay: `${index * 50}ms` }}>
                   <label className="block text-sm font-medium text-gray-700 mb-2 capitalize">
                     {element}
                   </label>
@@ -94,7 +143,7 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                     value={settings.data?.[element] || ''}
                     onChange={(e) => handleDataChange(element, e.target.value)}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-400 resize-none transition-all duration-300 hover:border-gray-300 bg-white shadow-sm"
                   />
                 </div>
               ))}
@@ -102,11 +151,11 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
           )}
 
           {activeTab === 'styles' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold mb-4">Настройка стилей</h3>
-              {template && Object.entries(template.settings.editableStyles).map(([key, config]) => (
-                <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-6 animate-fadeIn">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Настройка стилей</h3>
+              {template && Object.entries(template.settings.editableStyles).map(([key, config], index) => (
+                <div key={key} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 animate-slideIn" style={{ animationDelay: `${index * 50}ms` }}>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
                     {config.label}
                   </label>
 
@@ -117,13 +166,13 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                         type="color"
                         value={settings.styles?.[key] || config.default}
                         onChange={(e) => handleStyleChange(key, e.target.value)}
-                        className="h-10 w-20 rounded cursor-pointer"
+                        className="h-12 w-24 rounded-lg cursor-pointer border-2 border-gray-200 hover:border-blue-400 transition-all"
                       />
                       <input
                         type="text"
                         value={settings.styles?.[key] || config.default}
                         onChange={(e) => handleStyleChange(key, e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all duration-300 hover:border-gray-300"
                         placeholder="#000000"
                       />
                     </div>
@@ -136,13 +185,13 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                       value={settings.styles?.[key] || config.default}
                       onChange={(e) => handleStyleChange(key, e.target.value)}
                       placeholder={config.placeholder || config.default}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all duration-300 hover:border-gray-300"
                     />
                   )}
 
                   {/* Тип: number - числовое поле */}
                   {config.type === 'number' && (
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-3 items-center">
                       <input
                         type="number"
                         value={settings.styles?.[key] || config.default}
@@ -150,10 +199,10 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                         min={config.min}
                         max={config.max}
                         step={config.step || 1}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all duration-300 hover:border-gray-300"
                       />
                       {config.unit && (
-                        <span className="text-sm text-gray-600 font-medium">{config.unit}</span>
+                        <span className="text-sm text-gray-600 font-medium bg-gray-100 px-3 py-2 rounded-lg">{config.unit}</span>
                       )}
                     </div>
                   )}
@@ -163,7 +212,7 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                     <select
                       value={settings.styles?.[key] || config.default}
                       onChange={(e) => handleStyleChange(key, e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-400 transition-all duration-300 hover:border-gray-300 bg-white cursor-pointer"
                     >
                       {config.options.map(option => (
                         <option key={option} value={option}>
@@ -184,9 +233,9 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
                           min={config.min}
                           max={config.max}
                           step={config.step || 0.1}
-                          className="flex-1"
+                          className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                         />
-                        <span className="text-sm font-medium text-gray-700 min-w-[3rem] text-right">
+                        <span className="text-sm font-semibold text-blue-600 min-w-[3rem] text-right bg-blue-50 px-3 py-1 rounded-lg">
                           {settings.styles?.[key] || config.default}
                         </span>
                       </div>
@@ -198,16 +247,19 @@ export default function BlockSettingsModal({ block, template, onClose, onSave })
           )}
         </div>
 
-        <div className="p-6 border-t flex justify-end gap-4">
+        <div className="p-6 border-t flex justify-end gap-4 bg-gradient-to-r from-gray-50 to-blue-50/30">
           <button
-            onClick={onClose}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            onClick={handleClose}
+            className="px-8 py-3 border-2 border-gray-300 rounded-xl hover:bg-white hover:border-gray-400 transition-all duration-300 font-medium text-gray-700 hover:shadow-md transform hover:scale-105"
           >
             Отмена
           </button>
           <button
-            onClick={() => onSave(settings)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={() => {
+              onSave(settings);
+              handleClose();
+            }}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium transform hover:scale-105"
           >
             Сохранить
           </button>
