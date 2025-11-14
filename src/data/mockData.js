@@ -3,7 +3,8 @@
 export const mockCategories = [
   { id: 1, name: 'Заголовки' },
   { id: 2, name: 'Контент' },
-  { id: 3, name: 'Галереи' }
+  { id: 3, name: 'Галереи' },
+  { id: 4, name: 'Кастомные' }
 ];
 
 export const mockBlockTemplates = [
@@ -628,6 +629,20 @@ export const mockBlockTemplates = [
       "stat1": "Довольных клиентов",
       "stat2": "Завершённых проектов",
       "stat3": "Лет опыта"
+    }
+  },
+  {
+    "id": 8,
+    "category_id": 4,
+    "template_name": "HtmlBlock",
+    "name": "HTML блок",
+    "preview_url": "https://via.placeholder.com/300x200/38b2ac/ffffff?text=HTML+Block",
+    "settings": {
+      "type": "html",
+      "editableElements": ["htmlContent"]
+    },
+    "default_data": {
+      "htmlContent": "<div style=\"padding: 40px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;\">\n  <h2 style=\"margin: 0 0 20px 0; font-size: 32px;\">Кастомный HTML блок</h2>\n  <p style=\"margin: 0; font-size: 18px;\">Здесь вы можете добавить любой HTML код</p>\n</div>"
     }
   }
 ]

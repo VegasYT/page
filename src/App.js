@@ -41,10 +41,10 @@ export default function App() {
       type: blockTemplate ? 'template' : 'zeroblock',
       position: blocks.length,
       settings: blockTemplate ? {
-        styles: Object.keys(blockTemplate.settings.editableStyles).reduce((acc, key) => {
+        styles: blockTemplate.settings.editableStyles ? Object.keys(blockTemplate.settings.editableStyles).reduce((acc, key) => {
           acc[key] = blockTemplate.settings.editableStyles[key].default;
           return acc;
-        }, {}),
+        }, {}) : {},
         data: { ...blockTemplate.default_data }
       } : {}
     };
