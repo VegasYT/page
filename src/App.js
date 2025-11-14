@@ -91,8 +91,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header 
-        viewportSize={viewportSize} 
+      <Header
+        viewportSize={viewportSize}
         onViewportChange={setViewportSize}
         onAddBlockClick={() => setIsAddBlockModalOpen(true)}
       />

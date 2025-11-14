@@ -72,7 +72,7 @@ export default function BlockPreview({
       )}
 
       {block.type === 'zeroblock' ? (
-        <ZeroBlockPreview viewportSize={viewportSize} />
+        <ZeroBlockPreview block={block} viewportSize={viewportSize} />
       ) : template ? (
         template.settings.type === 'html' ? (
           <HtmlBlockRenderer htmlContent={block.settings.data?.htmlContent || ''} />

@@ -125,10 +125,18 @@ export default function UniversalBlockRenderer({ structure, data, styles, viewpo
           </a>
         );
       case 'img':
+        let imgSrc = src;
+        if (!imgSrc && element.srcKey) {
+          if (repeatData && element.srcKey === '{{current}}') {
+            imgSrc = repeatData;
+          } else {
+            imgSrc = data[element.srcKey] || '';
+          }
+        }
         return (
-          <img 
-            {...props} 
-            src={src || data[element.srcKey] || ''} 
+          <img
+            {...props}
+            src={imgSrc || ''}
             alt={alt || data[element.altKey] || textContent || ''}
           />
         );
